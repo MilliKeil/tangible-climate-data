@@ -1,2 +1,2 @@
-apikey.json
-.gitignore
+*.json
+.DS_Store
