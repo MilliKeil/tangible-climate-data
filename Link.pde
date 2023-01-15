@@ -24,7 +24,7 @@ public class Link{
     int i = 0;
     for(String word: words){
       float x = (width/2) + 150 * cos(i*radian);
-      float y = (height/2) + 150 * cos(i*radian);
+      float y = (height/2) + 150 * sin(i*radian);
       text(word,x,y);
       i++;
     }
