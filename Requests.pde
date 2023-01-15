@@ -9,7 +9,7 @@ public JSONObject openaiRequest(String text){
         postMethod.addRequestHeader("Content-Type", "application/json");
         postMethod.addRequestHeader("Accept", "application/json; charset=utf-8");
         postMethod.addRequestHeader("Authorization",String.format("Bearer %s",apikey));
-        JSONObject j = parseJSONObject(String.format("{'model': 'text-davinci-003','prompt': %s,'max_tokens': 50,'temperature': 0}",text));
+        JSONObject j = parseJSONObject(String.format("{'model': 'text-davinci-003','prompt': %s,'max_tokens': 100,'temperature': 0}",text));
         try{
           StringRequestEntity requestEntity = new StringRequestEntity(
                 j.toString(),

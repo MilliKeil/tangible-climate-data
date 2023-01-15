@@ -3,6 +3,7 @@ class Node{
   String word;
   float x;
   float y;
+  int refs;
   public Node(int id,String word,float x, float y){
     this.id = id;
     this.word = word;
@@ -13,10 +14,13 @@ class Node{
     this.x = x;
     this.y = y;
   }
+  public void refUp(){
+    this.refs++;
+  }
   public void display(){
     stroke(0);
     fill(255);
-    ellipse(x,y,50,50);
+    ellipse(x,y,50+20*refs,50+20*refs);
     fill(0);
     textSize(20);
     text(word,x,y);

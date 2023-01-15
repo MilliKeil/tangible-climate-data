@@ -4,11 +4,16 @@ HashMap<String,Node> wordConnections = new HashMap<String,Node>();
 boolean wordSwitch = false;
 String a1 = "_";
 String a2 = "_";
+String answer = "";
 int id = 0;
+int id_link = 0;
 void setup(){
 //Window 1000px width 1000px height
 size(1000,1000);
 background(255);
+startSocketServer();
+PFont font = createFont("./Font/IBMPlexMono-SemiBold.ttf",128);
+textFont(font);
 }
 //<!--- Draw function is called 30 times per second (due to 30 fps of the app) --!>
 void draw(){
@@ -16,13 +21,14 @@ void draw(){
   //Iterate trough all Links and call their display function
   for(int i = 0; i < links.size(); i++){
     links.get(i).display();
+    links.get(i).wordCloud();
   }
   //Format text
   fill(0);
-  textSize(25);
+  textSize(20);
   textAlign(CENTER,CENTER);
   //Fill in written text from User into String 
-  String question = String.format("What could the future of 1. %s and 2. %s look like considering climate change?",a1,a2);
+  String question = String.format("What could the future of %s and %s look like considering climate change? \n Type and press Enter.",a1,a2);
   //Display text
   text(question,width/2,50);
 }
@@ -33,14 +39,9 @@ void keyPressed() {
     //and the second word is written...
     if(wordSwitch){
       //create the question and call the OpenAI API with the question. 
-      String question = String.format("How could climate change look like if %s would support %s?",a1,a2);
       //Get answer from the JSON Object in the response 
-      //callAPI(question)
-      //Create two nodes and one Link between them
-      createNodes(a1,a2,"");
-      wordSwitch = false;
-      a1 = "_";
-      a2 = "_";
+      callAPI();
+
     }else{
       //and the first word was finished, then change swit to true so the second word can be filled
       wordSwitch = true;
@@ -64,25 +65,39 @@ void keyPressed() {
     }
   }
 }
-public JSONObject callAPI(String question){
+public void callAPI(){
+      String question = String.format("How could climate change look like if %s would support %s?",a1,a2);
       JSONObject response = openaiRequest(question);
       JSONArray choices = response.getJSONArray("choices");
       JSONObject choice = choices.getJSONObject(0);
-      return choice;
+      String answer = choice.getString("text");
+      wss.sendMessage(answer);
 }
-public void createNodes(String a1, String a2,String link){
+public void createNodes(String a1, String a2,String link,HashMap<String,HashSet<String>> tokenizedWords){
   Node n1 = wordConnections.get(a1);
   Node n2 = wordConnections.get(a2);
   if(n1 == null){
     n1 = new Node(id,a1,random(100,width-100),random(100,height-100));
     wordConnections.put(a1,n1);
     id++;
+  }else{
+    n1.refUp();
   }
   if(n2 == null){
     n2 = new Node(id,a2,random(100,width-100),random(100,height-100));
     wordConnections.put(a2,n2);
     id++;
+  }else{
+    n2.refUp();
   }
-  links.add(new Link(n1,n2,""));
+  links.add(new Link(id_link,n1,n2,"",tokenizedWords));
+  id_link++;
 
+}
+void cleanup(){
+  //reset Queston builder
+  wordSwitch = false;
+  a1 = "_";
+  a2 = "_";
+  answer = "";
 }
