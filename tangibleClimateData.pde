@@ -38,12 +38,10 @@ void keyPressed() {
   if(key == ENTER){
     //and the second word is written...
     if(wordSwitch){
-      //create the question and call the OpenAI API with the question. 
       //Get answer from the JSON Object in the response 
       callAPI();
-
     }else{
-      //and the first word was finished, then change swit to true so the second word can be filled
+      //And the first word was finished, then change wordSwitch to true so the second word can be filled
       wordSwitch = true;
     }
   }else{
@@ -71,7 +69,7 @@ public void callAPI(){
       JSONArray choices = response.getJSONArray("choices");
       JSONObject choice = choices.getJSONObject(0);
       String answer = choice.getString("text");
-      wss.sendMessage(answer);
+      wsc.sendMessage(answer);
 }
 public void createNodes(String a1, String a2,String link,HashMap<String,HashSet<String>> tokenizedWords){
   Node n1 = wordConnections.get(a1);

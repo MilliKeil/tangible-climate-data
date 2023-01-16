@@ -3,9 +3,9 @@ import java.util.HashSet;
 WebsocketClient wsc;
 WebsocketServer wss;
 public void startSocketServer(){
-  wss = new WebsocketServer(this,8025,"/john");
+  wsc = new WebsocketClient(this,"ws://localhost:8025");
 }
-public void webSocketServerEvent(String msg){
+void webSocketEvent(String msg){
   JSONArray j = parseJSONArray(msg);
   HashMap<String,HashSet<String>> tokenizedWords = new HashMap<String,HashSet<String>>();
   for(int i = 0; i< j.size();i++){
